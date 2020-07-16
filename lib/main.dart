@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
             brightness: Brightness.dark,
             primaryColor: Color.fromRGBO(72, 101, 129, 1),
           ),
-          themeMode: ThemeMode.dark,
+          themeMode: ThemeMode.light,
           home: HomeScreen(),
           routes: {
             HomeScreen.routeName: (ctx) => HomeScreen(),
