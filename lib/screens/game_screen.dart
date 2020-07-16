@@ -31,20 +31,45 @@ class _GameScreenState extends State<GameScreen> {
     win = false;
   }
 
+  void _showErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          'Error!',
+          style: TextStyle(color: Colors.red),
+        ),
+        content: Text("Please check your internet connection and try again"),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   void reset() async {
-    final provider = Provider.of<Word>(context, listen: false);
-    await provider.getWord();
-    setState(() {
-      attemptLog = [];
-      winText = "lost";
-      win = false;
-      showKeyboard = true;
-      answer = provider.answer;
-      guess = provider.guess;
-      stage = 1;
-      // globalKey.currentState.showSnackBar(buildSnack("Reset"));
-      print(answer);
-    });
+    try {
+      final provider = Provider.of<Word>(context, listen: false);
+      await provider.getWord();
+      setState(() {
+        attemptLog = [];
+        winText = "lost";
+        win = false;
+        showKeyboard = true;
+        answer = provider.answer;
+        guess = provider.guess;
+        stage = 1;
+        globalKey.currentState.showSnackBar(buildSnack("Reset"));
+        print(answer);
+      });
+    } catch (e) {
+      _showErrorDialog();
+    }
   }
 
   @override

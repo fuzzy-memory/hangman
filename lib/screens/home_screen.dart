@@ -65,8 +65,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.circular(20),
               ),
               onPressed: () async {
-                await Provider.of<Word>(context, listen: false).getWord();
-                Navigator.of(context).pushNamed(GameScreen.routeName);
+                try {
+                  await Provider.of<Word>(context, listen: false).getWord();
+                  Navigator.of(context).pushNamed(GameScreen.routeName);
+                } catch (error) {
+                  _showErrorDialog();
+                }
               },
             )
           ],
@@ -77,6 +81,27 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.of(context).pushNamed(SettingsScreen.routeName);
         },
         child: Icon(Icons.settings),
+      ),
+    );
+  }
+
+  void _showErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          'Error!',
+          style: TextStyle(color: Colors.red),
+        ),
+        content: Text("Please check your internet connection and try again"),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
       ),
     );
   }
