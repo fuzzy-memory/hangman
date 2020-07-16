@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hangman2/providers/word.dart';
 import 'package:provider/provider.dart';
 
 import 'game_screen.dart';
-import '../providers/word.dart';
+import 'settings_screen.dart';
+import '../main.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = "/home";
@@ -62,12 +64,19 @@ class _HomeScreenState extends State<HomeScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              onPressed: () {
+              onPressed: () async {
+                await Provider.of<Word>(context, listen: false).getWord();
                 Navigator.of(context).pushNamed(GameScreen.routeName);
               },
             )
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed(SettingsScreen.routeName);
+        },
+        child: Icon(Icons.settings),
       ),
     );
   }

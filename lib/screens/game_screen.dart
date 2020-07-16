@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/word.dart';
+// import '../main.dart';
 
 class GameScreen extends StatefulWidget {
   static const routeName = "/game-screen";
@@ -11,7 +12,7 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   bool isDarkTheme;
-  String answer, guess, winText, assetKey;
+  String winText, assetKey, answer, guess;
   int stage;
   bool showKeyboard, win;
   List<String> attemptLog = [];
@@ -19,36 +20,37 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   void initState() {
-    
+    answer = Provider.of<Word>(context, listen: false).answer;
+    guess = Provider.of<Word>(context, listen: false).guess;
+
     super.initState();
     winText = "lost";
     attemptLog = [];
     showKeyboard = true;
     stage = 1;
     win = false;
-    Provider.of<Word>(context, listen: false).getWord().then((value) {
-      answer = Provider.of<Word>(context, listen: false).obtainedWord;
-      guess = Provider.of<Word>(context, listen: false).blank;
-    });
   }
 
   void reset() async {
-    attemptLog = [];
-    winText = "lost";
-    win = false;
-    showKeyboard = true;
     final provider = Provider.of<Word>(context, listen: false);
     await provider.getWord();
-    answer = provider.obtainedWord;
-    guess = provider.blank;
-    stage = 1;
-    globalKey.currentState.showSnackBar(buildSnack("Reset"));
+    setState(() {
+      attemptLog = [];
+      winText = "lost";
+      win = false;
+      showKeyboard = true;
+      answer = provider.answer;
+      guess = provider.guess;
+      stage = 1;
+      // globalKey.currentState.showSnackBar(buildSnack("Reset"));
+      print(answer);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    isDarkTheme=Theme.of(context).brightness==Brightness.dark;
-    assetKey=isDarkTheme?"dark":"light";
+    isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    assetKey = isDarkTheme ? "dark" : "light";
     return Scaffold(
       key: globalKey,
       body: Center(
@@ -61,7 +63,8 @@ class _GameScreenState extends State<GameScreen> {
                     color: Colors.green,
                     size: MediaQuery.of(context).size.height * 0.25,
                   )
-                : Image.asset("assets/images/$assetKey/men-0${stage.toString()}.png"),
+                : Image.asset(
+                    "assets/images/$assetKey/men-0${stage.toString()}.png"),
             Text(
               guess ?? "",
               style: TextStyle(
@@ -184,9 +187,12 @@ class _GameScreenState extends State<GameScreen> {
           width: 30,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: isDarkTheme?Colors.teal:Colors.indigo,
+            color: isDarkTheme ? Colors.teal : Colors.indigo,
           ),
-          child: Text(letter, style: TextStyle(color: Colors.white),),
+          child: Text(
+            letter,
+            style: TextStyle(color: Colors.white),
+          ),
           alignment: Alignment.center,
         ),
       ),
