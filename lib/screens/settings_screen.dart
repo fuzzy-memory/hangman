@@ -165,7 +165,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           children: <Widget>[
                             CircleAvatar(
                               backgroundImage: ExactAssetImage(
-                                "assets/images/dev.jpg",
+                                "assets/images/photo.jpg",
                               ),
                               radius: MediaQuery.of(context).size.height * 0.08,
                             ),
