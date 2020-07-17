@@ -44,3 +44,4 @@ app.*.map.json
 
 *.ai
 /assets/images/*.jpg
+/android/key.properties

@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import 'game_screen.dart';
 import 'settings_screen.dart';
-import '../main.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = "/home";
