@@ -168,42 +168,44 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   Widget buildKey(String letter) {
+    letter = letter.toLowerCase();
+    bool attempted = attemptLog.contains(letter);
     return GestureDetector(
-      onTap: () {
-        letter = letter.toLowerCase();
-        if (attemptLog.contains(letter)) return;
-        attemptLog.add(letter);
-        print(letter + " " + attemptLog.toString());
-        if (answer.contains(letter)) {
-          var list = answer.split("");
-          for (int i = 0; i < answer.length; i++) {
-            if (letter == list[i]) {
-              setState(() {
-                guess = guess.replaceFirst(RegExp("_"), list[i], i);
-              });
-            }
-          }
-        } else {
-          setState(() {
-            stage++;
-          });
-        }
-        if (stage >= 8) {
-          setState(() {
-            showKeyboard = false;
-            guess = answer;
-          });
-          return;
-        }
-        if (!guess.contains(RegExp("_"))) {
-          setState(() {
-            win = true;
-            winText = "won";
-            showKeyboard = false;
-          });
-          return;
-        }
-      },
+      onTap: attempted
+          ? null
+          : () {
+              attemptLog.add(letter);
+              print(letter + " " + attemptLog.toString());
+              if (answer.contains(letter)) {
+                var list = answer.split("");
+                for (int i = 0; i < answer.length; i++) {
+                  if (letter == list[i]) {
+                    setState(() {
+                      guess = guess.replaceFirst(RegExp("_"), list[i], i);
+                    });
+                  }
+                }
+              } else {
+                setState(() {
+                  stage++;
+                });
+              }
+              if (stage >= 8) {
+                setState(() {
+                  showKeyboard = false;
+                  guess = answer;
+                });
+                return;
+              }
+              if (!guess.contains(RegExp("_"))) {
+                setState(() {
+                  win = true;
+                  winText = "won";
+                  showKeyboard = false;
+                });
+                return;
+              }
+            },
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Container(
@@ -212,7 +214,9 @@ class _GameScreenState extends State<GameScreen> {
           width: 30,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: isDarkTheme ? Colors.teal : Colors.indigo,
+            color: attempted
+                ? Colors.grey
+                : isDarkTheme ? Colors.teal : Colors.indigo,
           ),
           child: Text(
             letter,
