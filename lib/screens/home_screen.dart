@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hangman2/providers/word.dart';
 import 'package:provider/provider.dart';
 
 import 'game_screen.dart';
 import 'settings_screen.dart';
+import '../providers/word.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = "/home";
@@ -12,6 +12,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool clickable = false;
+  @override
+  void initState() {
+    super.initState();
+    clickable = true;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    clickable = true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,34 +57,46 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            RaisedButton(
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.5,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
-                alignment: Alignment.center,
-                child: Text(
-                  "Begin",
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Colors.white,
-                    fontFamily: "OpenSans",
-                  ),
-                ),
-              ),
-              color: Theme.of(context).primaryColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              onPressed: () async {
-                try {
-                  await Provider.of<Word>(context, listen: false).getWord();
-                  Navigator.of(context).pushNamed(GameScreen.routeName);
-                } catch (error) {
-                  _showErrorDialog();
-                }
-              },
-            )
+            !clickable
+                ? CircularProgressIndicator()
+                : RaisedButton(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 16),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Begin",
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.white,
+                          fontFamily: "OpenSans",
+                        ),
+                      ),
+                    ),
+                    color: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    onPressed: !clickable
+                        ? null
+                        : () async {
+                            try {
+                              setState(() {
+                                clickable = false;
+                              });
+                              await Provider.of<Word>(context, listen: false)
+                                  .getWord();
+                              Navigator.of(context)
+                                  .pushNamed(GameScreen.routeName);
+                              setState(() {
+                                clickable = true;
+                              });
+                            } catch (error) {
+                              _showErrorDialog();
+                            }
+                          },
+                  )
           ],
         ),
       ),

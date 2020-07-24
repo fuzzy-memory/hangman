@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/word.dart';
-// import '../main.dart';
 
 class GameScreen extends StatefulWidget {
   static const routeName = "/game-screen";
@@ -12,17 +11,19 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   bool isDarkTheme;
-  String winText, assetKey, answer, guess;
+  String winText, assetKey, answer, guess, def;
   int stage;
-  bool showKeyboard, win;
+  bool showKeyboard, win, showMeaning, refreshable;
   List<String> attemptLog = [];
   final globalKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
+    refreshable = true;
+    showMeaning = false;
     answer = Provider.of<Word>(context, listen: false).answer;
     guess = Provider.of<Word>(context, listen: false).guess;
-
+    def = Provider.of<Word>(context, listen: false).meaning;
     super.initState();
     winText = "lost";
     attemptLog = [];
@@ -57,6 +58,8 @@ class _GameScreenState extends State<GameScreen> {
       final provider = Provider.of<Word>(context, listen: false);
       await provider.getWord();
       setState(() {
+        showMeaning = false;
+        def = provider.meaning;
         attemptLog = [];
         winText = "lost";
         win = false;
@@ -66,6 +69,9 @@ class _GameScreenState extends State<GameScreen> {
         stage = 1;
         globalKey.currentState.showSnackBar(buildSnack("Reset"));
         print(answer);
+        setState(() {
+          refreshable = true;
+        });
       });
     } catch (e) {
       _showErrorDialog();
@@ -90,20 +96,86 @@ class _GameScreenState extends State<GameScreen> {
                   )
                 : Image.asset(
                     "assets/images/$assetKey/men-0${stage.toString()}.png"),
-            Text(
-              guess ?? "",
-              style: TextStyle(
-                letterSpacing: 12,
-                fontSize: 30,
+            refreshable
+                ? Text(
+                    guess ?? "",
+                    style: TextStyle(
+                      letterSpacing: 12,
+                      fontSize: 30,
+                    ),
+                  )
+                : Text(
+                    "Loading word",
+                    style: TextStyle(fontSize: 24),
+                  ),
+            refreshable ? buildKeyboard() : CircularProgressIndicator(),
+            Container(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(25),
+                child: !showMeaning
+                    ? null
+                    : Container(
+                        padding: EdgeInsets.all(16),
+                        color: def.isEmpty
+                            ? Colors.red
+                            : win ? Colors.green : Colors.red,
+                        height: MediaQuery.of(context).size.height * 0.25,
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        alignment: Alignment.center,
+                        child: def ==
+                                "There was an error retrieving the definition"
+                            ? Text(
+                                "There was an error receiving the definition",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 22, color: Colors.white),
+                              )
+                            : Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      Text(
+                                        "Definition of",
+                                        style: TextStyle(
+                                            fontSize: 19, color: Colors.white),
+                                      ),
+                                      Text(answer,
+                                          style: TextStyle(
+                                              fontSize: 22,
+                                              color: Colors.white,
+                                              fontFamily: "PlayfairDisplay")),
+                                    ],
+                                  ),
+                                  Text(
+                                    def,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                      ),
               ),
             ),
-            buildKeyboard(),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         child: win ? Icon(Icons.check) : Icon(Icons.refresh),
-        onPressed: reset,
+        backgroundColor:
+            refreshable ? Theme.of(context).colorScheme.secondary : Colors.grey,
+        onPressed: refreshable
+            ? () {
+                setState(() {
+                  refreshable = false;
+                });
+                reset();
+              }
+            : null,
       ),
     );
   }
@@ -174,6 +246,9 @@ class _GameScreenState extends State<GameScreen> {
       onTap: attempted
           ? null
           : () {
+              setState(() {
+                refreshable = true;
+              });
               attemptLog.add(letter);
               print(letter + " " + attemptLog.toString());
               if (answer.contains(letter)) {
@@ -193,6 +268,7 @@ class _GameScreenState extends State<GameScreen> {
               if (stage >= 8) {
                 setState(() {
                   showKeyboard = false;
+                  showMeaning = true;
                   guess = answer;
                 });
                 return;
@@ -202,6 +278,7 @@ class _GameScreenState extends State<GameScreen> {
                   win = true;
                   winText = "won";
                   showKeyboard = false;
+                  showMeaning = true;
                 });
                 return;
               }
@@ -237,7 +314,7 @@ class _GameScreenState extends State<GameScreen> {
       backgroundColor: Colors.green,
       behavior: SnackBarBehavior.floating,
       elevation: 5,
-      duration: Duration(milliseconds: 1500),
+      duration: Duration(milliseconds: 700),
       action: SnackBarAction(
         label: "OK",
         textColor: Colors.white,

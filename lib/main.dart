@@ -10,7 +10,7 @@ import 'screens/settings_screen.dart';
 void main() {
   runApp(MyApp());
 }
-// String answer, guess;
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -33,12 +33,12 @@ class MyApp extends StatelessWidget {
             brightness: Brightness.dark,
             primaryColor: Color.fromRGBO(72, 101, 129, 1),
           ),
-          themeMode: appstate.isDark?ThemeMode.dark:ThemeMode.light,
+          themeMode: appstate.isDark ? ThemeMode.dark : ThemeMode.light,
           home: HomeScreen(),
           routes: {
             HomeScreen.routeName: (ctx) => HomeScreen(),
             GameScreen.routeName: (ctx) => GameScreen(),
-            SettingsScreen.routeName: (ctx)=>SettingsScreen(),
+            SettingsScreen.routeName: (ctx) => SettingsScreen(),
           },
         ),
       ),

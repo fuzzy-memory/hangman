@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hangman2/providers/appstate.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart' as pack;
+
+import '../providers/appstate.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const routeName = "/settings";
