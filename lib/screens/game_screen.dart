@@ -45,6 +45,9 @@ class _GameScreenState extends State<GameScreen> {
           FlatButton(
             child: Text('OK'),
             onPressed: () {
+              setState(() {
+                refreshable = true;
+              });
               Navigator.of(ctx).pop();
             },
           )
@@ -122,10 +125,10 @@ class _GameScreenState extends State<GameScreen> {
                         height: MediaQuery.of(context).size.height * 0.25,
                         width: MediaQuery.of(context).size.width * 0.5,
                         alignment: Alignment.center,
-                        child: def ==
-                                "There was an error retrieving the definition"
+                        child: def.contains(
+                                "There was an error retrieving the definition")
                             ? Text(
-                                "There was an error receiving the definition",
+                                "There was an error receiving the definition - $answer may be an inflection",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 22, color: Colors.white),
@@ -183,9 +186,11 @@ class _GameScreenState extends State<GameScreen> {
   Widget buildKeyboard() {
     return Container(
       child: showKeyboard
-          ? Column(
+          ? Flex(
+            direction: Axis.vertical,
               children: <Widget>[
-                Row(
+                Flex(
+                  direction: Axis.horizontal,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     buildKey('Q'),
@@ -200,7 +205,8 @@ class _GameScreenState extends State<GameScreen> {
                     buildKey('P'),
                   ],
                 ),
-                Row(
+                Flex(
+                  direction: Axis.horizontal,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     buildKey('A'),
@@ -214,7 +220,8 @@ class _GameScreenState extends State<GameScreen> {
                     buildKey('L'),
                   ],
                 ),
-                Row(
+                Flex(
+                  direction: Axis.horizontal,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     buildKey('Z'),
@@ -287,8 +294,8 @@ class _GameScreenState extends State<GameScreen> {
         padding: const EdgeInsets.all(4.0),
         child: Container(
           // padding: EdgeInsets.all(8),
-          height: 30,
-          width: 30,
+          height: 32,
+          width: 32,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
             color: attempted
@@ -296,8 +303,8 @@ class _GameScreenState extends State<GameScreen> {
                 : isDarkTheme ? Colors.teal : Colors.indigo,
           ),
           child: Text(
-            letter,
-            style: TextStyle(color: Colors.white),
+            letter.toUpperCase(),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
           alignment: Alignment.center,
         ),

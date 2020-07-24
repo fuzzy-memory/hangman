@@ -122,6 +122,9 @@ class _HomeScreenState extends State<HomeScreen> {
           FlatButton(
             child: Text('OK'),
             onPressed: () {
+              setState(() {
+                clickable=true;
+              });
               Navigator.of(ctx).pop();
             },
           )

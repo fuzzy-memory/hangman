@@ -57,7 +57,7 @@ class Word with ChangeNotifier {
       print("Fetched meaning: $_meaning");
     } on RangeError {
       print("Range error");
-      _meaning = "There was an error retrieving the definition";
+      _meaning = "There was an error retrieving the definition (Word may be an inflection)";
     } catch (e) {
       print(e);
       _meaning = "There was an error retrieving the definition";
