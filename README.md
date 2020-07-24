@@ -1,16 +1,12 @@
-# hangman2
+# Hangman
+## The classic word game
 
-A new Flutter project.
+Hangman - the classic word game with a clean user interface and theme options, without ads or any other frills
+Makes use of the [WordsAPI](https://rapidapi.com/dpventures/api/wordsapi/details) to fetch words and their meanings.
 
-## Getting Started
+**Get it for [Android](https://play.google.com/store/apps/details?id=com.fuzzymemory.hangman)**
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## What's new
+1. Added a word-definition feature
+2. Made a lot of under-the-hood changes
+3. Other minor bug fixes
